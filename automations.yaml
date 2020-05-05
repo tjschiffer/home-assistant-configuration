@@ -1,0 +1,11 @@
+- id: '1558902156292'
+  alias: Living Room Light Switch
+  trigger:
+  - entity_id: binary_sensor.living_room_light_switch
+    platform: state
+  action:
+    service_template: "{% if trigger.from_state.state == 'on' and trigger.to_state.state\
+      \ == 'off' %}\n  light.turn_off\n{% elif trigger.from_state.state == 'off' and\
+      \ trigger.to_state.state == 'on' %}\n  light.turn_on\n{% endif %}\n"
+    data:
+      entity_id: light.living_room_lights

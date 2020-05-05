@@ -1,0 +1,86 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Home
+  # Location required to calculate the time the sun rises and sets
+  latitude: !secret latitude
+  longitude: !secret longitude
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 0
+  # metric for Metric, imperial for Imperial
+  unit_system: metric
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: America/New_York
+  # Customization file
+  customize: !include customize.yaml
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+# Show the introduction message on startup.
+# introduction:
+
+# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+http:
+  base_url: !secret base_url
+  ssl_certificate: /ssl/certificate.pem
+  ssl_key: /ssl/privatekey.pem
+  ip_ban_enabled: true
+  login_attempts_threshold: 4
+
+# Sensors
+sensor:
+  # Weather prediction
+  - platform: yr
+
+nest:
+  client_id: !secret nest_client_id
+  client_secret: !secret nest_client_secret
+
+eufy:
+  username: !secret eufy_username
+  password: !secret eufy_password
+  
+wink:
+
+datadog:
+
+# Text to speech
+tts:
+  - platform: google_translate
+    service_name: google_say
+
+switch:
+  - platform: flux
+    name: "Main Flux"
+    lights:
+      - light.nina_s_bedroom_lamp_1
+      - light.nina_s_bedroom_lamp_2
+      - light.t_j_s_bedroom_lamp
+      - light.sex_cave
+      - light.living_room
+    stop_colortemp: 2300
+    disable_brightness_adjust: true
+    mode: mired
+    transition: 10
+    interval: 20
+
+light:
+  - platform: group
+    name: Living Room Lights
+    entities:
+      - light.sb50_1
+      - light.om100_1
+
+input_number:
+  baby_bouncer:
+    name: Baby Bouncer
+    initial: 0
+    min: 0
+    max: 100
+    step: 1
+    mode: slider
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+frontend: !include frontend.yaml
