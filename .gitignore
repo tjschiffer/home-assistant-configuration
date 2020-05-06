@@ -10,6 +10,12 @@
 
 # subfolders
 !esphome
+!node-red
+
+# node-red specific files
+!node-red/flows.json
+!node-red/node-red-contrib-home-assistant-websocket.json
+!node-red/package.json
 
 # Ignore folders.
 .storage
