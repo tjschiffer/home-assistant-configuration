@@ -6,6 +6,10 @@
 !*.yaml
 !.gitignore
 !*.md
+!*.h
+
+# ESPHome configs folder
+!esphome
 
 # Ignore folders.
 .storage
