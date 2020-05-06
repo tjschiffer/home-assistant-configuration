@@ -8,7 +8,7 @@
 !*.md
 !*.h
 
-# ESPHome configs folder
+# subfolders
 !esphome
 
 # Ignore folders.

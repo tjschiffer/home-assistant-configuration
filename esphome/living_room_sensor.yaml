@@ -1,0 +1,75 @@
+esphome:
+  name: living_room_sensor
+  platform: ESP32
+  board: nodemcu-32s
+  includes:
+    - om100.h
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: ${readable_devicename} Hotspot
+    password: !secret ap_password
+
+captive_portal:
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+
+i2c:
+
+sensor:
+  - platform: bmp280
+    temperature:
+      name: "Living Room Temperature"
+    pressure:
+      name: "Living Room Pressure"
+    address: 0x76
+  - platform: dht
+    pin: GPIO27
+    temperature:
+      name: "Living Room Temperature (AM2302)"
+    humidity:
+      name: "Living Room Humidity"
+    model: AM2302
+    update_interval: 60s
+    
+    
+    
+
+
+# Define output pins
+output:
+  - platform: ledc
+    id: output_red
+    pin: GPIO4
+  - platform: ledc
+    id: output_green
+    pin: GPIO12
+  - platform: ledc
+    id: output_blue
+    pin: GPIO14
+  - platform: ledc
+    id: output_cold_white
+    pin: GPIO5
+  - platform: ledc
+    id: output_warm_white
+    pin: GPIO13
+    
+light:
+  - platform: custom
+    lambda: |-
+      auto light_out = new OM100(id(output_red), id(output_green), id(output_blue), id(output_cold_white), id(output_warm_white));
+      App.register_component(light_out);
+      return {light_out};
+    lights:
+      - name: test_light_om100
+        id: test_light_om100

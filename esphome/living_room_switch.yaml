@@ -1,0 +1,83 @@
+substitutions:
+  devicename: living_room_switch
+  readable_devicename: Living Room Switch
+
+esphome:
+  name: $devicename
+  platform: ESP32
+  board: esp32doit-devkit-v1
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: ${readable_devicename} Hotspot
+    password: !secret ap_password
+
+captive_portal:
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+
+# globals:
+#   - id: double_press_delay
+#     type: bool
+#     restore_value: no
+#     initial_value: 'false'
+
+status_led:
+  pin: GPIO2
+
+# switch:
+#   platform: gpio
+#   pin: GPIO2
+#   id: led1
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO13
+      inverted: True
+      mode: INPUT_PULLUP
+    name: "Living Room Light Switch"
+    # on_press:
+      # - switch.turn_on: led1
+      # - if:
+      #     condition:
+      #       lambda: |-
+      #         return id(double_press_delay);
+      #     then:
+      #       - homeassistant.service:
+      #           service: light.turn_on
+      #           data:
+      #             entity_id: "light.living_room"
+      #             brightness_pct: 30
+      #     else:
+      #       - homeassistant.service:
+      #           service: light.turn_on
+      #           data:
+      #             entity_id: "light.living_room"
+      #             brightness_pct: 100
+      #       - lambda: |-
+                # id(double_press_delay) = false;
+    # on_release:
+      # - switch.turn_off: led1
+      # - homeassistant.service:
+      #     service: light.turn_off
+      #     data:
+      #       entity_id: "light.living_room"
+      # - lambda: |-
+      #     id(double_press_delay) = true;
+      # - delay: 500ms
+      # - lambda: |-
+      #     id(double_press_delay) = false;
+    filters:
+      - delayed_on: 20ms
+      - delayed_off: 20ms

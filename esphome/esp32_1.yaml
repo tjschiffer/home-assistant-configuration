@@ -1,0 +1,95 @@
+esphome:
+  name: esp32_1
+  platform: ESP32
+  board: nodemcu-32s
+  on_boot:
+    - output.set_level:
+        id: gpio13_pwm
+        level: 28%
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  fast_connect: true
+  manual_ip:
+    static_ip: 192.168.1.210
+    gateway: 192.168.1.1
+    subnet: 255.255.255.0
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Esp32 1 Fallback Hotspot"
+    password: "Paris888"
+    
+status_led:
+  pin: GPIO2
+
+captive_portal:
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  services:
+    - service: set_gpio13_pwm_delay
+      variables:
+        speed: float
+      then:
+        - globals.set:
+            id: gpio13_pwm_delay
+            value: !lambda |-
+              if (speed > 0) {
+                return (float) (2 - 0.014 * std::min(std::max(0.0f, speed), 100.0f));
+              } else {
+                return 0.0f;
+              }
+        - if:
+            condition:
+              not:
+                - script.is_running: servo_oscillation
+            then:
+              - script.execute: servo_oscillation
+        - logger.log:
+            format: "Received %.1f from Home Assistant API, writing %.1f as gpio13_pwm_delay."
+            args: [ 'speed', 'id(gpio13_pwm_delay)']
+
+ota:
+
+globals:
+   - id: gpio13_pwm_delay
+     type: float
+     initial_value: '0'
+
+script:
+  - id: servo_oscillation
+    then:
+      - while:
+          condition:
+            and:
+            - api.connected:
+            - lambda: |-
+                return id(gpio13_pwm_delay) > 0;
+          then:
+            - output.set_level:
+                id: gpio13_pwm
+                level: 53%
+            - delay: !lambda |-
+                return id(gpio13_pwm_delay) * 1000;
+            - output.set_level:
+                id: gpio13_pwm
+                level: 28%
+            - delay: !lambda |-
+                return id(gpio13_pwm_delay) * 1000;
+      - delay: 0.5s
+      - output.set_level:
+          id: gpio13_pwm
+          level: 28%
+
+output:
+  - platform: ledc
+    id: gpio13_pwm
+    pin: GPIO13
+    frequency: 50 Hz
+    min_power: 3%    
+    max_power: 12.5%
