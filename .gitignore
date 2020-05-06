@@ -12,6 +12,11 @@
 .cloud
 .google.token
 
+# Travis Configuration
+!.travis
+!.travis/travis.*
+!.travis.yaml
+
 # Ensure these YAML files are ignored, otherwise your secret data/credentials will leak.
 ip_bans.yaml
 secrets.yaml
