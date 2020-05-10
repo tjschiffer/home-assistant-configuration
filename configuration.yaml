@@ -80,6 +80,14 @@ input_number:
     step: 1
     mode: slider
 
+input_boolean:
+  humidity_control:
+    name: Humidity Control
+    icon: mdi:air-humidifier
+  main_flux:
+    name: Main Flux
+    icon: mdi:lightbulb-outline
+
 group: !include groups.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml
