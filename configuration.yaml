@@ -49,28 +49,6 @@ tts:
   - platform: google_translate
     service_name: google_say
 
-switch:
-  - platform: flux
-    name: "Main Flux"
-    lights:
-      - light.nina_s_bedroom_lamp_1
-      - light.nina_s_bedroom_lamp_2
-      - light.t_j_s_bedroom_lamp
-      - light.sex_cave
-      - light.living_room
-    stop_colortemp: 2300
-    disable_brightness_adjust: true
-    mode: mired
-    transition: 10
-    interval: 20
-
-light:
-  - platform: group
-    name: Living Room Lights
-    entities:
-      - light.sb50_1
-      - light.om100_1
-
 input_number:
   baby_bouncer:
     name: Baby Bouncer
@@ -88,6 +66,7 @@ input_boolean:
     name: Main Flux
     icon: mdi:lightbulb-outline
 
+light: !include light.yaml
 group: !include groups.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml
