@@ -29,8 +29,8 @@ captive_portal:
 # Enable logging
 logger:
 
-# Enable Home Assistant API
 api:
+  password: !secret api_password
   services:
     - service: set_gpio13_pwm_delay
       variables:
@@ -55,6 +55,7 @@ api:
             args: [ 'speed', 'id(gpio13_pwm_delay)']
 
 ota:
+  password: !secret ota_password
 
 globals:
    - id: gpio13_pwm_delay

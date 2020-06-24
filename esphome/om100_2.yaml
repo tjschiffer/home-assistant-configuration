@@ -1,6 +1,6 @@
 substitutions:
-  devicename: om100_1
-  readable_devicename: OM100 1
+  devicename: om100_2
+  readable_devicename: OM100 2
 
 esphome:
   name: $devicename
@@ -22,7 +22,7 @@ wifi:
   password: !secret wifi_password
   fast_connect: true
   manual_ip:
-    static_ip: 192.168.1.214
+    static_ip: 192.168.1.215
     gateway: 192.168.1.1
     subnet: 255.255.255.0
 
@@ -67,5 +67,3 @@ light:
     lights:
       - name: $devicename
         id: $devicename
-
-

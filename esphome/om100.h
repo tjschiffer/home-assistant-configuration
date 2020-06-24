@@ -6,6 +6,15 @@ uint32_t DEFAULT_TRANSITION_LENGTH = 200; // 0.2s
 float MIN_MIREDS = 154; // 6500 K
 float MAX_MIREDS = 370; // 2700 K
 
+// float WHITE_BRIGHTNESS_ZERO_VALUE = 0.005;
+
+// float set_zero(float value, float zero) {
+//   if (value <= zero) {
+//     return 0.0f;
+//   }
+//   return value;
+// }
+
 class OM100 : public Component, public LightOutput {
   public:
   OM100(FloatOutput *red, FloatOutput *green, FloatOutput *blue, FloatOutput *white_color, FloatOutput *white_brightness)
@@ -84,7 +93,11 @@ class OM100 : public Component, public LightOutput {
     float brightness = remote_values.get_brightness();
     for ( auto &s : this->corrected_output_ ) {
       if (s.first != "white_color") {
-        s.second *= (state_on_off * brightness);
+        s.second *= state_on_off;
+
+        if (s.first != "white_brightness") {
+          s.second *= brightness;
+        }
       }
     }
   }
@@ -116,9 +129,9 @@ class OM100 : public Component, public LightOutput {
     lerp_white_color = esphome::lerp(progress, this->prev_corrected_output_["white_color"], this->corrected_output_["white_color"]);
     lerp_white_brightness = esphome::lerp(progress, this->prev_corrected_output_["white_brightness"], this->corrected_output_["white_brightness"]);
 
-    // ESP_LOGD("write_state",
-    //     "red %f, green %f, blue %f, white_color %f, white_brightness %f", lerp_red, lerp_green, lerp_blue, lerp_white_color, lerp_white_brightness
-    // );
+    ESP_LOGD("write_state",
+        "red %f, green %f, blue %f, white_color %f, white_brightness %f", lerp_red, lerp_green, lerp_blue, lerp_white_color, lerp_white_brightness
+    );
 
     this->red_->set_level(lerp_red);
     this->green_->set_level(lerp_green);

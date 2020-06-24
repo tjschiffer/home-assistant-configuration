@@ -1,5 +1,6 @@
 - platform: group
   name: Living Room Lights
   entities:
-      - light.sb50_1
+      # - light.sb50_1
       - light.om100_1
+      - light.om100_2
