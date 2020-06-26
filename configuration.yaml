@@ -22,8 +22,8 @@ default_config:
 # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
 http:
   base_url: !secret base_url
-  ssl_certificate: /ssl/certificate.pem
-  ssl_key: /ssl/privatekey.pem
+  # ssl_certificate: /ssl/certificate.pem
+  # ssl_key: /ssl/privatekey.pem
   ip_ban_enabled: true
   login_attempts_threshold: 4
 
@@ -71,3 +71,4 @@ group: !include groups.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml
 frontend: !include frontend.yaml
+scene: !include scenes.yaml
