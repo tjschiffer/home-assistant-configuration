@@ -25,6 +25,7 @@ wifi:
     static_ip: 192.168.1.214
     gateway: 192.168.1.1
     subnet: 255.255.255.0
+  reboot_timeout: 60min
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
@@ -36,6 +37,7 @@ logger:
 
 api:
   password: !secret api_password
+  reboot_timeout: 0s
 
 ota:
   password: !secret ota_password

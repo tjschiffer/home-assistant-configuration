@@ -1,0 +1,39 @@
+esphome:
+  name: nursery_sensor
+  platform: ESP32
+  board: nodemcu-32s
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  fast_connect: true
+
+  ap:
+    ssid: Nursery Sensor Hotspot
+    password: !secret ap_password
+    
+status_led:
+  pin: GPIO2
+
+captive_portal:
+
+logger:
+
+api:
+  password: !secret api_password
+  reboot_timeout: 0s
+
+ota:
+  password: !secret ota_password
+
+i2c:
+
+sensor:
+- platform: bme280
+  temperature:
+    name: "Nursery Temperature"
+  pressure:
+    name: "Nursery Pressure"
+  humidity:
+    name: "Nursery Humidity"
+  address: 0x76

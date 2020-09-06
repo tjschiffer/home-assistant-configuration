@@ -3,9 +3,5 @@
     "description": "A Node-RED Project",
     "version": "0.0.1",
     "private": true,
-    "dependencies": {
-        "node-red-contrib-home-assistant-websocket": "~0.22.3",
-        "node-red-contrib-sun-position": "~1.0.17",
-        "node-red-contrib-timed-counter": "0.0.4"
-    }
+    "dependencies": {}
 }
