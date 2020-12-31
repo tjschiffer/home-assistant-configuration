@@ -1,0 +1,45 @@
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  fast_connect: true
+  use_address: ${lan_address}
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: ${readable_devicename} Hotspot
+    password: !secret ap_password
+
+captive_portal:
+
+# Enable logging
+logger:
+
+api:
+  password: !secret api_password
+
+ota:
+  password: !secret ota_password
+
+i2c:
+
+status_led:
+  pin:
+    number: GPIO2
+
+sensor:
+  - platform: bme280
+    temperature:
+      name: ${readable_devicename} Temperature
+    pressure:
+      name: ${readable_devicename} Pressure
+    humidity:
+      name: ${readable_devicename} Humidity
+    address: 0x76
+  - platform: wifi_signal
+    name: ${readable_devicename} Wifi Signal
+    update_interval: 60s
+  
+binary_sensor:
+  - platform: status
+    name: ${readable_devicename} Status

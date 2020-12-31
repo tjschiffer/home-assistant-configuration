@@ -8,7 +8,7 @@ esphome:
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
-  
+  fast_connect: true
   manual_ip:
     static_ip: 192.168.1.203
     gateway: 192.168.1.1
@@ -47,6 +47,10 @@ sensor:
       name: "Living Room Humidity"
     model: AM2302
     update_interval: 60s
+    
+binary_sensor:
+  - platform: status
+    name: "Living Room Sensor Status"
 
 # Define output pins
 output:

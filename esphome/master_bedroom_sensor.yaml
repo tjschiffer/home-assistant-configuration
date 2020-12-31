@@ -1,45 +1,11 @@
 substitutions:
   devicename: master_bedroom_sensor
   readable_devicename: Master Bedroom Sensor
+  lan_address: master-bedroom-sensor.lan
 
 esphome:
   name: $devicename
   platform: ESP32
   board: esp32doit-devkit-v1
 
-wifi:
-  ssid: !secret wifi_ssid
-  password: !secret wifi_password
-  use_address: master-bedroom-sensor.lan
-
-  # Enable fallback hotspot (captive portal) in case wifi connection fails
-  ap:
-    ssid: ${readable_devicename} Hotspot
-    password: !secret ap_password
-
-captive_portal:
-
-# Enable logging
-logger:
-
-api:
-  password: !secret api_password
-
-ota:
-  password: !secret ota_password
-
-i2c:
-
-status_led:
-  pin:
-    number: GPIO2
-
-sensor:
-- platform: bme280
-  temperature:
-    name: "Master Bedroom Temperature"
-  pressure:
-    name: "Master Bedroom Pressure"
-  humidity:
-    name: "Master Bedroom Humidity"
-  address: 0x76
+<<: include .bme280_sensor.yaml

@@ -1,7 +1,6 @@
 - platform: group
   name: Living Room Lights
   entities:
-      - light.sb50_1
       - light.om100_1
       - light.om100_2
 - platform: group
@@ -16,3 +15,8 @@
       - light.t_j_s_bedroom_lamp_2
       - light.nina_s_bedroom_lamp
       - light.sex_cave
+- platform: group
+  name: Office Light
+  entities:
+      - light.sb50_1
+      - light.sb50_2

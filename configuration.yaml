@@ -26,9 +26,9 @@ http:
   login_attempts_threshold: 4
 
 # Sensors
-sensor:
+# sensor:
   # Weather prediction
-  - platform: yr
+  # - platform: yr
 
 # nest:
 #   client_id: !secret nest_client_id
@@ -50,11 +50,21 @@ input_number:
     max: 100
     step: 1
     mode: slider
+  master_bedroom_temperature:
+    name: Master Bedroom Temperature
+    initial: 22
+    min: 15
+    max: 30
+    step: 0.5
+    mode: slider
 
 input_boolean:
   humidity_control:
     name: Humidity Control
     icon: mdi:air-humidifier
+  temperature_control:
+      name: Temperature Control
+      icon: mdi:radiator
   main_flux:
     name: Main Flux
     icon: mdi:lightbulb-outline

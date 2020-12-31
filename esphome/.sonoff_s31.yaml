@@ -1,0 +1,73 @@
+# Sonoff S31
+esphome:
+  name: sonoff_s31_${device_number}
+  platform: ESP8266
+  board: esp01_1m
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  fast_connect: true
+  use_address: sonoff-s31-${device_number}.lan
+  reboot_timeout: 60min
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: Sonoff S31 ${device_number} Hotspot
+    password: !secret ap_password
+
+captive_portal:
+
+logger:
+  baud_rate: 0  # (UART logging interferes with cse7766)
+
+api:
+  password: !secret api_password
+  reboot_timeout: 0s
+
+ota:
+  password: !secret ota_password
+
+uart: # Needed for cse7766
+  rx_pin: RX
+  baud_rate: 4800
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO0
+      mode: INPUT_PULLUP
+      inverted: True
+    name:  Sonoff S31 ${device_number} Button
+    on_click:
+      max_length: 500ms
+      then:
+        - switch.toggle: s31_relay
+  - platform: status
+    name:  Sonoff S31 ${device_number} Status
+
+sensor:
+  - platform: wifi_signal
+    name: Sonoff S31 ${device_number} Wifi Signal
+    update_interval: 60s
+  - platform: cse7766
+    current:
+      name: Sonoff S31 ${device_number} Current
+      accuracy_decimals: 1
+    voltage:
+      name: Sonoff S31 ${device_number} Voltage
+      accuracy_decimals: 1
+    power:
+      name: Sonoff S31 ${device_number} Power
+      accuracy_decimals: 1
+
+status_led:
+  pin:
+    number: GPIO13
+    inverted: True
+
+switch:
+  - platform: gpio
+    id: s31_relay
+    pin: GPIO12
+    name: Sonoff S31 ${device_number} Relay

@@ -1,20 +1,6 @@
 substitutions:
   devicename: "sb50_1"
   readable_devicename: "SB50 1"
-
-esphome:
-  name: $devicename
-  platform: ESP8266
-  board: esp01_1m
-  includes:
-    - sb50.h
-  on_boot:
-    then:
-      - lambda: |-
-          auto call = id(${devicename}).turn_on();
-          call.set_brightness(1.0);
-          call.set_rgb(0.0, 0.0, 0.0);
-          call.set_color_temperature(259);
-          call.perform();
+  lan_address: sb50-1.lan
 
 <<: !include .sb50.yaml
