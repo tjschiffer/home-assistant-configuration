@@ -1,0 +1,54 @@
+substitutions:
+  device_number: "2"
+
+<<: !include .sonoff_mini.yaml
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO0
+      mode: INPUT_PULLUP
+      inverted: true
+    name:  Sonoff Mini ${device_number} Button
+    on_click:
+      max_length: 500ms
+      then:
+        - switch.toggle: sonoff_mini_relay
+  - platform: gpio
+    pin:
+      number: GPIO04
+      mode: INPUT_PULLUP
+      inverted: true
+    name:  Sonoff Mini ${device_number} Switch
+    on_multi_click:
+      - timing:
+          - ON for at most 0.5s
+          - OFF for at most 0.5s
+          - ON for at most 0.5s
+          - OFF for at most 0.5s
+          - ON for at most 0.5s
+          - OFF for at most 0.5s
+          - ON for at most 0.5s
+          - OFF for at most 0.5s
+          - ON for at most 0.5s
+          - OFF for at most 0.5s
+          - ON for at most 0.5s
+          - OFF for at most 0.5s
+          - ON for at most 0.5s
+          - OFF for at most 0.5s
+          - ON for at most 0.5s
+          - OFF for at most 0.5s
+          - ON for at most 0.5s
+          - OFF for at most 0.5s
+          - ON for at most 0.5s
+          - OFF for at most 0.5s
+          - ON for at most 0.5s
+          - OFF for at most 0.5s
+          - ON for at most 0.5s
+          - OFF for at most 0.5s
+          - ON for at most 0.5s
+          - OFF for at most 0.5s
+        then:
+          - switch.turn_on: sonoff_mini_reboot
+  - platform: status
+    name:  Sonoff Mini ${device_number} Status

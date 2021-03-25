@@ -1,0 +1,4 @@
+substitutions:
+  device_number: "5"
+
+<<: !include .sonoff_s31.yaml

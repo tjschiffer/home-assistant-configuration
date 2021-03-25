@@ -1,0 +1,47 @@
+# Sonoff Mini
+esphome:
+  name: sonoff_mini_${device_number}
+  platform: ESP8266
+  board: esp01_1m
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  fast_connect: true
+  use_address: sonoff-mini-${device_number}.lan
+  reboot_timeout: 60min
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: Sonoff Mini ${device_number} Hotspot
+    password: !secret ap_password
+
+captive_portal:
+
+logger:
+
+api:
+  password: !secret api_password
+  reboot_timeout: 0s
+
+ota:
+  password: !secret ota_password
+
+sensor:
+  - platform: wifi_signal
+    name: Sonoff Mini ${device_number} Wifi Signal
+    update_interval: 60s
+
+status_led:
+  pin:
+    number: GPIO13
+    inverted: true
+
+switch:
+  - platform: gpio
+    id: sonoff_mini_relay
+    pin: GPIO12
+    name: Sonoff Mini ${device_number} Relay
+  - platform: restart
+    name: Sonoff Mini ${device_number} Reboot
+    id: sonoff_mini_reboot

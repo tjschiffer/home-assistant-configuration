@@ -98,3 +98,15 @@ output:
 binary_sensor:
   - platform: status
     name: "Esp32 1 Status"
+    
+i2c:
+
+sensor:
+  - platform: bme280
+    temperature:
+      name: "Esp32 1 Temperature"
+    pressure:
+      name: "Esp32 1 Pressure"
+    humidity:
+      name: "Esp32 1 Humidity"
+    address: 0x76

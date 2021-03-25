@@ -1,11 +1,30 @@
-# - id: '1558902156292'
-#   alias: Living Room Light Switch
-#   trigger:
-#   - entity_id: binary_sensor.living_room_light_switch
-#     platform: state
-#   action:
-#     service_template: "{% if trigger.from_state.state == 'on' and trigger.to_state.state\
-#       \ == 'off' %}\n  light.turn_off\n{% elif trigger.from_state.state == 'off' and\
-#       \ trigger.to_state.state == 'on' %}\n  light.turn_on\n{% endif %}\n"
-#     data:
-#       entity_id: light.living_room_lights
+- id: '1615338219902'
+  alias: Living Room Light Switch
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.sonoff_mini_1_switch_1
+    from: 'off'
+    to: 'on'
+  condition: []
+  action:
+  - service: light.toggle
+    data:
+      brightness: 255
+    target:
+      entity_id: light.living_room_lights
+  mode: single
+- id: '1616599090779'
+  alias: Living Room Hall Switch
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.sonoff_mini_2_switch
+    from: 'off'
+    to: 'on'
+  condition: []
+  action:
+  - service: switch.toggle
+    target:
+      entity_id: switch.sonoff_mini_1_relay
+  mode: single

@@ -30,11 +30,11 @@ status_led:
 sensor:
   - platform: bme280
     temperature:
-      name: ${readable_devicename} Temperature
+      name: ${room} Temperature
     pressure:
-      name: ${readable_devicename} Pressure
+      name: ${room} Pressure
     humidity:
-      name: ${readable_devicename} Humidity
+      name: ${room} Humidity
     address: 0x76
   - platform: wifi_signal
     name: ${readable_devicename} Wifi Signal

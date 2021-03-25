@@ -1,6 +1,7 @@
 substitutions:
   devicename: master_bedroom_sensor
   readable_devicename: Master Bedroom Sensor
+  room: Master Bedroom
   lan_address: master-bedroom-sensor.lan
 
 esphome:
@@ -8,4 +9,4 @@ esphome:
   platform: ESP32
   board: esp32doit-devkit-v1
 
-<<: include .bme280_sensor.yaml
+<<: !include .bme280_sensor.yaml
