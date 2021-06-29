@@ -1,0 +1,6 @@
+substitutions:
+  devicename: "sb50_r_4"
+  readable_devicename: "SB50-R 4"
+  lan_address: sb50-r-4.lan
+
+<<: !include .sb50_r.yaml
