@@ -29,19 +29,8 @@ api:
 ota:
   password: !secret ota_password
 
-# globals:
-#   - id: double_press_delay
-#     type: bool
-#     restore_value: no
-#     initial_value: 'false'
-
 status_led:
   pin: GPIO2
-
-# switch:
-#   platform: gpio
-#   pin: GPIO2
-#   id: led1
 
 binary_sensor:
   - platform: gpio
@@ -50,37 +39,6 @@ binary_sensor:
       inverted: True
       mode: INPUT_PULLUP
     name: "Living Room Light Switch"
-    # on_press:
-      # - switch.turn_on: led1
-      # - if:
-      #     condition:
-      #       lambda: |-
-      #         return id(double_press_delay);
-      #     then:
-      #       - homeassistant.service:
-      #           service: light.turn_on
-      #           data:
-      #             entity_id: "light.living_room"
-      #             brightness_pct: 30
-      #     else:
-      #       - homeassistant.service:
-      #           service: light.turn_on
-      #           data:
-      #             entity_id: "light.living_room"
-      #             brightness_pct: 100
-      #       - lambda: |-
-                # id(double_press_delay) = false;
-    # on_release:
-      # - switch.turn_off: led1
-      # - homeassistant.service:
-      #     service: light.turn_off
-      #     data:
-      #       entity_id: "light.living_room"
-      # - lambda: |-
-      #     id(double_press_delay) = true;
-      # - delay: 500ms
-      # - lambda: |-
-      #     id(double_press_delay) = false;
     filters:
-      - delayed_on: 20ms
+      - delayed_on: 50ms
       - delayed_off: 20ms

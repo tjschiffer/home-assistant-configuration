@@ -20,10 +20,6 @@ binary_sensor:
       mode: INPUT_PULLUP
       inverted: true
     name:  Sonoff Mini ${device_number} Switch
-    on_press:
-      then:
-        - switch.toggle:
-            id: sonoff_mini_relay
     on_multi_click:
       - timing:
           - ON for at most 0.5s
@@ -54,6 +50,10 @@ binary_sensor:
           - OFF for at most 0.5s
         then:
           - switch.turn_on: sonoff_mini_reboot
+      - timing:
+          - ON for at least 10s
+        then:
+          - switch.toggle: sonoff_mini_relay
   - platform: status
     name:  Sonoff Mini ${device_number} Status
   # Specific to sonoff_mini_1
