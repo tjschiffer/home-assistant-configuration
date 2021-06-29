@@ -1,5 +1,5 @@
 - id: '1615338219902'
-  alias: Living Room Light Switch
+  alias: Living Room Light Switch (Lamps)
   description: ''
   trigger:
   - platform: state
@@ -19,12 +19,30 @@
   description: ''
   trigger:
   - platform: state
-    entity_id: binary_sensor.sonoff_mini_2_switch
+    entity_id: binary_sensor.living_room_light_switch
     from: 'off'
     to: 'on'
   condition: []
   action:
-  - service: switch.toggle
+  - service: light.toggle
     target:
-      entity_id: switch.sonoff_mini_1_relay
+      entity_id: light.dining_lights
+    data:
+      brightness: 204
+  mode: single
+- id: '1620780488824'
+  alias: Dining Light Switch
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.sonoff_mini_1_switch
+    from: 'off'
+    to: 'on'
+  condition: []
+  action:
+  - service: light.toggle
+    target:
+      entity_id: light.dining_lights
+    data:
+      brightness: 204
   mode: single
