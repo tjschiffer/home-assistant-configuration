@@ -1,0 +1,49 @@
+esphome:
+  name: esp32c6-1
+
+esp32:
+  board: esp32-c6-devkitc-1
+  variant: ESP32C6
+  framework:
+    type: esp-idf
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  # encryption:
+  #   key: "oGCUgWAO4b3GauowhHDwcMXVE8vNMvV7sWDROptagsY="
+
+ota:
+  - platform: esphome
+    # password: !secret ota_password
+
+network:
+  enable_ipv6: true
+
+openthread:
+  tlv: !secret openthread_tlv
+
+# wifi:
+#   ssid: !secret wifi_ssid
+#   password: !secret wifi_password
+
+#   # Enable fallback hotspot (captive portal) in case wifi connection fails
+#   ap:
+#     ssid: "Esp32C6-1 Fallback Hotspot"
+#     password: "OQMPfgwQ9Xgm"
+
+# captive_portal:
+
+# light:
+#   - platform: esp32_rmt_led_strip
+#     name: ESP32C6 LED
+#     pin: GPIO8
+#     rgb_order: GRB
+#     chipset: ws2812
+#     num_leds: 1
+
+# status_led:
+#   pin: GPIO15
+    

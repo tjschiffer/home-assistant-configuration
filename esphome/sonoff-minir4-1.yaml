@@ -1,0 +1,10 @@
+substitutions:
+  device_number: "1"
+
+script:
+  - id: switch_press
+    then:
+      - switch.toggle: sonoff_minir4_relay
+
+
+<<: !include .sonoff_minir4.yaml

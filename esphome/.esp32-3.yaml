@@ -1,0 +1,57 @@
+substitutions:
+  devicename: esp32-3
+  readable_devicename: ESP32 3
+
+esphome:
+  name: $devicename
+  platform: ESP32
+  board: esp32doit-devkit-v1
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  fast_connect: true
+  use_address: esp32-3.lan
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: ${readable_devicename} Hotspot
+    password: !secret ap_password
+
+captive_portal:
+
+# Enable logging
+logger:
+
+api:
+  password: !secret api_password
+
+ota:
+  password: !secret ota_password
+
+status_led:
+  pin: 2
+
+output:
+  - platform: ledc
+    pin: 13
+    id: gpio_13
+
+fan:
+  - platform: speed
+    output: gpio_13
+    name: ${readable_devicename} Fan
+
+sensor:
+  - platform: wifi_signal
+    name: ${readable_devicename} Wifi Signal
+    update_interval: 60s
+  - platform: pulse_counter
+    pin: 
+      number: 12
+      mode: INPUT_PULLUP
+    unit_of_measurement: 'RPM'
+    id: fan_speed
+    name: ${readable_devicename} Speed
+    filters:
+      - multiply: 0.5

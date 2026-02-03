@@ -1,0 +1,156 @@
+substitutions:
+  devicename: living_room_switch
+  readable_devicename: Living Room Switch
+
+esphome:
+  name: $devicename
+  platform: ESP32
+  board: esp32doit-devkit-v1
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  fast_connect: true
+  use_address: living-room-switch.lan
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: ${readable_devicename} Hotspot
+    password: !secret ap_password
+
+captive_portal:
+
+# Enable logging
+logger:
+
+api:
+  password: !secret api_password
+
+ota:
+  password: !secret ota_password
+
+status_led:
+  pin: GPIO2
+
+sensor:
+  # GVH5101_7F6F
+  - platform: template
+    name: "GVH5101_7F6F Humidity"
+    id: gvh5101_7f6f_humidity
+    device_class: "humidity"
+    state_class: "measurement"
+    icon: "mdi:water-percent"
+    unit_of_measurement: "%"
+  - platform: template
+    name: "GVH5101_7F6F Temperature"
+    id: gvh5101_7f6f_temperature
+    device_class: "temperature"
+    state_class: "measurement"
+    icon: "mdi:thermometer"
+    unit_of_measurement: "°C"
+  - platform: template
+    name: "GVH5101_7F6F RSSI"
+    id: gvh5101_7f6f_rssi
+    device_class: "signal_strength"
+    state_class: "measurement"
+    icon: "mdi:wifi"
+    unit_of_measurement: "dB"
+  - platform: template
+    name: "GVH5101_7F6F Battery"
+    id: gvh5101_7f6f_battery
+    device_class: "battery"
+    state_class: "measurement"
+    icon: "mdi:battery"
+    unit_of_measurement: "%"
+
+  # GVH5101_0E4B
+  - platform: template
+    name: "GVH5101_0E4B Humidity"
+    id: gvh5101_0e4b_humidity
+    device_class: "humidity"
+    state_class: "measurement"
+    icon: "mdi:water-percent"
+    unit_of_measurement: "%"
+  - platform: template
+    name: "GVH5101_0E4B Temperature"
+    id: gvh5101_0e4b_temperature
+    device_class: "temperature"
+    state_class: "measurement"
+    icon: "mdi:thermometer"
+    unit_of_measurement: "°C"
+  - platform: template
+    name: "GVH5101_0E4B RSSI"
+    id: gvh5101_0e4b_rssi
+    device_class: "signal_strength"
+    state_class: "measurement"
+    icon: "mdi:wifi"
+    unit_of_measurement: "dB"
+  - platform: template
+    name: "GVH5101_0E4B Battery"
+    id: gvh5101_0e4b_battery
+    device_class: "battery"
+    state_class: "measurement"
+    icon: "mdi:battery"
+    unit_of_measurement: "%"
+
+esp32_ble_tracker:
+  on_ble_advertise:
+    - mac_address: A4:C1:38:B2:7F:6F
+      then:
+        - lambda: |-
+              for (auto data : x.get_manufacturer_datas()) {
+                if (data.data.size() == 6) {
+                  int basenum = (int16_t(data.data[2]) << 16) + (int16_t(data.data[3]) << 8) + int16_t(data.data[4]);
+                  
+                  bool is_negative = false;
+                  if (basenum & 0x800000) {
+                      is_negative = true;
+                      basenum = basenum ^ 0x800000;
+                  }
+                  float temperature = basenum / 10000.0f;
+                  float humidity = (basenum % 1000) / 10.0f;
+                  float battery_level = uint16_t(data.data[5]) / 1.0f;
+                  if (is_negative) {
+                      temperature = -temperature;
+                  }
+                  int16_t rssi = x.get_rssi();
+
+                  ESP_LOGD("ble_adv", "  Temperature: %.2f°C", temperature);
+                  ESP_LOGD("ble_adv", "  Humidity: %.2f", humidity);
+                  ESP_LOGD("ble_adv", "  Battery Level: %.0f percent", battery_level);
+                  id(gvh5101_7f6f_humidity).publish_state(humidity);
+                  id(gvh5101_7f6f_temperature).publish_state(temperature);
+                  id(gvh5101_7f6f_rssi).publish_state(rssi);
+                  id(gvh5101_7f6f_battery).publish_state(battery_level);
+                } 
+              }
+
+    - mac_address: A4:C1:38:A2:0E:4B
+      then:
+      - lambda: |-
+              for (auto data : x.get_manufacturer_datas()) {
+                if (data.data.size() == 6) {
+                  int basenum = (int16_t(data.data[2]) << 16) + (int16_t(data.data[3]) << 8) + int16_t(data.data[4]);
+                  
+                  bool is_negative = false;
+                  if (basenum & 0x800000) {
+                      is_negative = true;
+                      basenum = basenum ^ 0x800000;
+                  }
+                  float temperature = basenum / 10000.0f;
+                  float humidity = (basenum % 1000) / 10.0f;
+                  float battery_level = uint16_t(data.data[5]) / 1.0f;
+                  if (is_negative) {
+                      temperature = -temperature;
+                  }
+                  int16_t rssi = x.get_rssi();
+
+                  ESP_LOGD("ble_adv", "  Temperature: %.2f°C", temperature);
+                  ESP_LOGD("ble_adv", "  Humidity: %.2f", humidity);
+                  ESP_LOGD("ble_adv", "  Battery Level: %.0f percent", battery_level);
+                  id(gvh5101_0e4b_humidity).publish_state(humidity);
+                  id(gvh5101_0e4b_temperature).publish_state(temperature);
+                  id(gvh5101_0e4b_rssi).publish_state(rssi);
+                  id(gvh5101_0e4b_battery).publish_state(battery_level);
+                } 
+              }

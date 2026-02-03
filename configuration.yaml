@@ -1,0 +1,102 @@
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+# http:
+#   ssl_certificate: /ssl/fullchain.pem
+#   ssl_key: /ssl/privkey.pem
+#   ip_ban_enabled: true
+#   login_attempts_threshold: 10
+
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 172.30.33.0/24
+  ip_ban_enabled: true
+  login_attempts_threshold: 10
+
+websocket_api:
+
+# datadog:
+#   host: !secret datadoghost
+
+# Text to speech
+tts:
+  - platform: google_translate
+    service_name: google_say
+
+ffmpeg:
+
+input_boolean:
+  humidity_control:
+    name: Humidity Control
+    icon: mdi:air-humidifier
+  main_flux:
+    name: Main Flux
+    icon: mdi:lightbulb-outline
+
+climate:
+  # - platform: generic_thermostat
+  #   name: Main Bedroom Heat
+  #   unique_id: main_bedroom_heat
+  #   heater: switch.sonoff_s31_1_relay # Main Bedroom Heater
+  #   target_sensor: sensor.h5075_43fa_temperature # Main Bedroom Temperature
+  #   min_temp: 16
+  #   max_temp: 24
+  # target_temp: 22.5
+  - platform: generic_thermostat
+    name: Abigael's Room Heat
+    unique_id: abigaels_room_heat
+    heater: switch.sonoff_s31_3_relay # Abigael's Room Heater
+    target_sensor: sensor.h5075_a283_temperature # Abigael's Room Temperature
+    min_temp: 16
+    max_temp: 24
+    # target_temp: 22.5
+  - platform: generic_thermostat
+    name: Gabriel's Room Heat
+    unique_id: gabriels_room_heat
+    heater: switch.sonoff_s31_8_relay # Gabriel's Room Heater
+    target_sensor: sensor.h5075_1f37_temperature # Gabriels's Room Temperature
+    min_temp: 16
+    max_temp: 24
+    # target_temp: 22.5
+
+generic_hygrostat:
+  - name: Main Bedroom Humidity
+    humidifier: switch.sonoff_s31_2_relay
+    target_sensor: sensor.h5075_43fa_humidity
+    min_humidity: 40
+    max_humidity: 60
+    # target_humidity: 55
+    device_class: humidifier
+    min_cycle_duration:
+      seconds: 60
+    initial_state: true
+  - name: Abigael's Room Humidity
+    humidifier: switch.sonoff_s31_4_relay
+    target_sensor: sensor.h5075_a283_humidity
+    min_humidity: 40
+    max_humidity: 60
+    # target_humidity: 55
+    device_class: humidifier
+    min_cycle_duration:
+      seconds: 60
+    initial_state: true
+  - name: Gabriel's Room Humidity
+    humidifier: switch.sonoff_s31_3_relay
+    target_sensor: sensor.h5075_1f37_humidity
+    min_humidity: 40
+    max_humidity: 60
+    # target_humidity: 55
+    device_class: humidifier
+    min_cycle_duration:
+      seconds: 60
+    initial_state: true
+
+light: !include light.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml

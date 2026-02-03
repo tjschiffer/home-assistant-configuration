@@ -1,0 +1,8 @@
+substitutions:
+  devicename: bluetooth-proxy-1
+  readable_devicename: Bluetooth Proxy 1
+  board: nodemcu-32s
+
+<<: !include .esp32_base.yaml
+
+<<: !include .bluetooth_proxy.yaml

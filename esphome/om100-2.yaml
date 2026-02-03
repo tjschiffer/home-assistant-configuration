@@ -1,0 +1,6 @@
+substitutions:
+  devicename: om100-2
+  readable_devicename: OM100 2
+  lan_address: om100-2.lan
+  
+<<: !include .om100.yaml

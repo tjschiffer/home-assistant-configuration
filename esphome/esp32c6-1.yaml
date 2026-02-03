@@ -1,0 +1,47 @@
+esphome:
+  name: esp32c6-1
+
+esp32:
+  board: esp32-c6-devkitc-1
+  variant: ESP32C6
+  framework:
+    type: esp-idf
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "oGCUgWAO4b3GauowhHDwcMXVE8vNMvV7sWDROptagsY="
+
+ota:
+  - platform: esphome
+    password: !secret ota_password
+
+network:
+  enable_ipv6: true
+
+openthread:
+  tlv: !secret openthread_tlv
+
+light:
+  - platform: esp32_rmt_led_strip
+    name: ESP32C6 LED
+    pin: GPIO8
+    rgb_order: GRB
+    chipset: ws2812
+    num_leds: 1
+
+sensor:
+  - platform: uptime
+    name: "Uptime"
+    unit_of_measurement: "h"
+    accuracy_decimals: 2
+    update_interval: 60s
+    filters:
+        - lambda: return x / 3600.0;
+    entity_category: diagnostic
+
+status_led:
+  pin: GPIO15

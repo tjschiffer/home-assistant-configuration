@@ -1,0 +1,51 @@
+
+esphome:
+  name: $devicename
+
+esp32:
+    board: ${board}
+    framework:
+      type: esp-idf
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  fast_connect: true
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  # Disable due to power consumption for ble proxy
+  # ap:
+  #   ssid: ${readable_devicename} Hotspot
+  #   password: !secret ap_password
+    
+
+# captive_portal:
+#   keep_user_credentials: true
+
+# Enable logging
+logger:
+
+api:
+  encryption:
+    key: xxx
+
+ota:
+  - platform: esphome
+    password: !secret ota_password
+
+# Remove, related to fallback hotspot
+# improv_serial:
+
+status_led:
+  pin:
+    number: GPIO2
+
+binary_sensor:
+  - platform: status
+    name: ${readable_devicename} Status
+
+
+sensor:
+  - platform: wifi_signal
+    name: ${readable_devicename} Wifi Signal
+    update_interval: 60s

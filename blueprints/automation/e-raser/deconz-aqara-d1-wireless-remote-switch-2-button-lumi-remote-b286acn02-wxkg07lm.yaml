@@ -1,0 +1,106 @@
+blueprint:
+  name: deCONZ - Aqara D1 Wireless Remote Switch (2 Button)
+  description: "Supported actions: single, double and long press."
+  domain: automation
+  source_url: https://community.home-assistant.io/t/deconz-aqara-d1-wireless-remote-switch-2-button-lumi-remote-b286acn02-wxkg07lm/274089
+  input:
+    remote:
+      name: Remote
+      description: Aqara D1 remote to use
+      selector:
+        device:
+          manufacturer: LUMI
+          model: lumi.remote.b286acn02
+          multiple: false
+    left_button_single_press:
+      name: Left button - Single press
+      description: Action on single press button
+      default: []
+      selector:
+        action: {}
+    left_button_double_press:
+      name: Left button - Double press
+      description: Action on double press button
+      default: []
+      selector:
+        action: {}
+    left_button_long_press:
+      name: Left button - Long Press
+      description: Action on long press button
+      default: []
+      selector:
+        action: {}
+    right_button_single_press:
+      name: Right button - Single press
+      description: Action on single press button
+      default: []
+      selector:
+        action: {}
+    right_button_double_press:
+      name: Right button - Double press
+      description: Action on double press button
+      default: []
+      selector:
+        action: {}
+    right_button_long_press:
+      name: Right button - Long Press
+      description: Action on long press button
+      default: []
+      selector:
+        action: {}
+    both_button_single_press:
+      name: Both buttons - Single press
+      description: Action on single press (BOTH buttons)
+      default: []
+      selector:
+        action: {}
+    both_button_double_press:
+      name: Both buttons - Double press
+      description: Action on double press (BOTH buttons)
+      default: []
+      selector:
+        action: {}
+    both_button_long_press:
+      name: Both buttons - Long press
+      description: Action on long press (BOTH buttons)
+      default: []
+      selector:
+        action: {}
+mode: restart
+max_exceeded: silent
+trigger:
+  - platform: event
+    event_type: zha_event
+    event_data:
+      device_id: !input remote
+action:
+  - variables:
+      command: "{{ trigger.event.data.command }}"
+  - choose:
+      - conditions:
+          - "{{ command == 'left_single' }}"
+        sequence: !input left_button_single_press
+      - conditions:
+          - "{{ command == 'left_double' }}"
+        sequence: !input left_button_double_press
+      - conditions:
+          - "{{ command == 'left_long press' }}"
+        sequence: !input left_button_long_press
+      - conditions:
+          - "{{ command == 'right_single' }}"
+        sequence: !input right_button_single_press
+      - conditions:
+          - "{{ command == 'right_double' }}"
+        sequence: !input right_button_double_press
+      - conditions:
+          - "{{ command == 'right_long press' }}"
+        sequence: !input right_button_long_press
+      - conditions:
+          - "{{ command == 'both_single' }}"
+        sequence: !input both_button_single_press
+      - conditions:
+          - "{{ command == 'both_double' }}"
+        sequence: !input both_button_double_press
+      - conditions:
+          - "{{ command == 'both_long press' }}"
+        sequence: !input both_button_long_press

@@ -1,0 +1,108 @@
+esphome:
+  name: esp32_1
+  platform: ESP32
+  board: nodemcu-32s
+  on_boot:
+    - output.set_level:
+        id: gpio13_pwm
+        level: 28%
+
+wifi:
+  ssid: IoTJ
+  password: okj%34r0c$
+  fast_connect: true
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Esp32 1 Fallback Hotspot"
+    password: "P@ssw0rd"
+    
+status_led:
+  pin: GPIO2
+
+captive_portal:
+
+# Enable logging
+logger:
+
+api:
+  password: !secret api_password
+  services:
+    - service: set_gpio13_pwm_delay
+      variables:
+        speed: float
+      then:
+        - globals.set:
+            id: gpio13_pwm_delay
+            value: !lambda |-
+              if (speed > 0) {
+                return (float) (2 - 0.014 * std::min(std::max(0.0f, speed), 100.0f));
+              } else {
+                return 0.0f;
+              }
+        - if:
+            condition:
+              not:
+                - script.is_running: servo_oscillation
+            then:
+              - script.execute: servo_oscillation
+        - logger.log:
+            format: "Received %.1f from Home Assistant API, writing %.1f as gpio13_pwm_delay."
+            args: [ 'speed', 'id(gpio13_pwm_delay)']
+
+ota:
+  password: !secret ota_password
+
+globals:
+   - id: gpio13_pwm_delay
+     type: float
+     initial_value: '0'
+
+script:
+  - id: servo_oscillation
+    then:
+      - while:
+          condition:
+            and:
+            - api.connected:
+            - lambda: |-
+                return id(gpio13_pwm_delay) > 0;
+          then:
+            - output.set_level:
+                id: gpio13_pwm
+                level: 53%
+            - delay: !lambda |-
+                return id(gpio13_pwm_delay) * 1000;
+            - output.set_level:
+                id: gpio13_pwm
+                level: 28%
+            - delay: !lambda |-
+                return id(gpio13_pwm_delay) * 1000;
+      - delay: 0.5s
+      - output.set_level:
+          id: gpio13_pwm
+          level: 28%
+
+output:
+  - platform: ledc
+    id: gpio13_pwm
+    pin: GPIO13
+    frequency: 50 Hz
+    min_power: 3%    
+    max_power: 12.5%
+    
+binary_sensor:
+  - platform: status
+    name: "Esp32 1 Status"
+    
+i2c:
+
+sensor:
+  - platform: bme280
+    temperature:
+      name: "Esp32 1 Temperature"
+    pressure:
+      name: "Esp32 1 Pressure"
+    humidity:
+      name: "Esp32 1 Humidity"
+    address: 0x76

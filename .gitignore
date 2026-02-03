@@ -1,0 +1,6 @@
+/secrets.yaml
+**/*.log*
+**/*.conf
+**/custom_components/**
+**/*.db*
+**/.storage/**

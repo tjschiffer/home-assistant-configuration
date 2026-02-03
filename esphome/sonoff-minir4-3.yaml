@@ -1,0 +1,10 @@
+substitutions:
+  device_number: "3"
+
+script:
+  - id: switch_press
+    then:
+      # do nothing
+
+
+<<: !include .sonoff_minir4.yaml

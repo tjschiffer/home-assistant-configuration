@@ -1,0 +1,8 @@
+substitutions:
+  devicename: bluetooth-proxy-2
+  readable_devicename: Bluetooth Proxy 2
+  board: esp32doit-devkit-v1
+
+<<: !include .esp32_base.yaml
+
+<<: !include .bluetooth_proxy.yaml

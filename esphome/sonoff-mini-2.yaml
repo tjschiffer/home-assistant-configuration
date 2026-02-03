@@ -1,0 +1,83 @@
+substitutions:
+  device_number: "2"
+
+<<: !include .sonoff_mini.yaml
+
+globals:
+  - id: light_mode
+    type: int
+    restore_value: no
+    initial_value: '0'
+  - id: last_pressed
+    type: int
+    restore_value: no
+    initial_value: '0'
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO0
+      mode: INPUT_PULLUP
+      inverted: true
+    name:  Sonoff Mini ${device_number} Button
+    on_click:
+      max_length: 500ms
+      then:
+        - switch.toggle: sonoff_mini_relay
+  - platform: gpio
+    pin:
+      number: GPIO04
+      mode: INPUT_PULLUP
+      inverted: true
+    name:  Sonoff Mini ${device_number} Switch
+    filters:
+      - delayed_on: 20ms
+      - delayed_off: 20ms
+    on_press:
+      then:
+        if:
+          condition:
+            not:
+              api.connected:
+          then:
+          - switch.toggle: sonoff_mini_relay
+        # DEAD CODE FOR ESPHOME STATE MANAGEMENT
+        # - lambda: |-
+        #     ESP_LOGD("custom", "Time is %d", millis());
+        #     ESP_LOGD("custom", "last pressed %d", int(id(last_pressed)));
+        #     ESP_LOGD("custom", "Last pressed diff %d", int(millis()) - int(id(last_pressed)));
+        #     if (int(millis()) - int(id(last_pressed)) < 500) {
+        #       id(light_mode)++;
+        #       if (id(light_mode) > 2) {
+        #         id(light_mode) = 0;
+        #       }
+        #     }
+        #     ESP_LOGD("custom", "Light mode is %d", id(light_mode));
+        #     id(last_pressed) = millis();
+        #     if (id(light_mode) == 0) {
+        #       id(sonoff_mini_relay).turn_on();
+        #       ESP_LOGD("custom", "Light ceil");
+        #     } else if (id(light_mode) == 1) {
+        #       ESP_LOGD("custom", "lamp");
+        #       HomeassistantServiceResponse resp;
+        #       resp.service = "switch.turn_on";
+        #       HomeassistantServiceMap entity_id_kv;
+        #       entity_id_kv.key = "entity_id";
+        #       entity_id_kv.value = "switch.sonoff_s31_7_relay";
+        #       resp.data.push_back(entity_id_kv);
+        #       id(api_server).send_homeassistant_service_call(resp);
+        #     } else if (id(light_mode) == 2) {
+        #       ESP_LOGD("custom", "do both");
+        #     }
+    on_click:
+      min_length: 1s
+      max_length: 5s
+      then:
+        - switch.toggle: sonoff_mini_relay
+    on_multi_click:
+      - timing:
+        - ON for at least 10s
+        then:
+          - switch.turn_on: sonoff_mini_reboot
+  - platform: status
+    name:  Sonoff Mini ${device_number} Status

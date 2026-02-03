@@ -1,0 +1,33 @@
+# yaml-language-server: $schema=http://ccab4aaf-frigate-fa:5000/api/config/schema.json
+
+mqtt:
+  host: homeassistant.lan #Insert the IP address of your Home Assistant
+  port: 1883 #Leave as default 1883 or change to match the port set in yout MQTT Broker configuration
+  user: frigate #Change to match the username set in your MQTT Broker
+  password: frigate1234_ #Change to match the password set in your MQTT Broker
+  stats_interval: 60
+cameras:
+  fornt-porch: #Change this to a name of the camera that makes sense to you
+    ffmpeg:
+      output_args:
+        record: preset-record-generic-audio-aac #Insert this if your camera supports audio output
+      inputs:
+        - path: rtsp://hass:hass1234@front-porch-camera.lan:554/Preview_01_main #Change as per your camera documentation for high quality feed
+          roles:
+            - record
+        - path: rtsp://hass:hass1234@front-porch-camera.lan:554/Preview_01_sub #Change as per your camera documentation for low quality feed
+          roles:
+            - detect
+    detect:
+      height: 360 #Change this to match the resolution of your detection channel (in this case channel 1)
+      width: 640 #Change this to match the resolution of your detection channel (in this case channel 1)
+      fps: 10 #This is the frame rate for detection, between 5-10 fps is sufficient.
+    record:
+      enabled: true
+      retain:
+        days: 0 # The number of days a recording will be kept for after a motion is detected.
+        mode: motion
+    objects:
+      track:
+        - person
+        - car

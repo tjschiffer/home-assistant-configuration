@@ -1,0 +1,476 @@
+- id: '1702417041189'
+  alias: Temperature Schedule AM
+  description: ''
+  triggers:
+  - at: 06:30:00
+    trigger: time
+  conditions: []
+  actions:
+  - target:
+      entity_id:
+      - climate.abigael_s_room_heat
+      - climate.main_bedroom_heat
+    data:
+      temperature: 19
+    action: climate.set_temperature
+  mode: single
+- id: '1702417152761'
+  alias: Temperature Schedule PM
+  description: ''
+  triggers:
+  - at: '19:00:00'
+    trigger: time
+  conditions: []
+  actions:
+  - target:
+      entity_id:
+      - climate.abigael_s_room_heat
+    data:
+      temperature: 21
+    action: climate.set_temperature
+  - target:
+      entity_id:
+      - climate.main_bedroom_heat
+    data:
+      temperature: 20
+    action: climate.set_temperature
+  mode: single
+- id: '1703011041743'
+  alias: deCONZ - Aqara D1 Wireless Remote Switch (2 Button)
+  description: ''
+  use_blueprint:
+    path: e-raser/deconz-aqara-d1-wireless-remote-switch-2-button-lumi-remote-b286acn02-wxkg07lm.yaml
+    input:
+      remote: 85523efe2dfa38de72b757c89e723b84
+      button_one_single_press:
+      - service: notify.mobile_app_pixel_7
+        data:
+          message: yay
+      left_button_single_press:
+      - data:
+          brightness_pct: 100
+        action: light.toggle
+        target:
+          entity_id: light.om100_2
+      left_button_double_press: []
+      right_button_single_press:
+      - data:
+          brightness_pct: 100
+        action: light.toggle
+        target:
+          entity_id: light.om100_1
+      both_button_single_press:
+      - data:
+          brightness_pct: 100
+        action: light.toggle
+        target:
+          entity_id: light.living_room_lights
+      left_button_long_press:
+      - data:
+          brightness_pct: 10
+        action: light.turn_on
+        target:
+          entity_id: light.om100_2
+      right_button_long_press:
+      - data:
+          brightness_pct: 10
+        action: light.toggle
+        target:
+          entity_id: light.om100_1
+      both_button_long_press:
+      - data:
+          brightness_pct: 10
+        action: light.turn_on
+        target:
+          entity_id: light.living_room_lights
+- id: '1710365651641'
+  alias: Gabriel's Room Light
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.sonoff_mini_2_switch
+    from: 'off'
+    to: 'on'
+  condition: []
+  action:
+  - service: switch.toggle
+    metadata: {}
+    data: {}
+    target:
+      entity_id: switch.sonoff_s31_7_relay
+  mode: single
+- id: '1715888991344'
+  alias: String Lights Motion (Ring)
+  description: ''
+  triggers:
+  - entity_id:
+    - switch.back_yard_motion_detection
+    to: 'on'
+    trigger: state
+  conditions:
+  - condition: sun
+    before: sunrise
+    after: sunset
+  actions:
+  - metadata: {}
+    data: {}
+    target:
+      entity_id: switch.sonoff_mini_1_relay
+    action: switch.turn_on
+  - wait_for_trigger:
+    - entity_id:
+      - switch.back_yard_motion_detection
+      for:
+        hours: 0
+        minutes: 0
+        seconds: 30
+      to: 'off'
+      trigger: state
+  - metadata: {}
+    data: {}
+    target:
+      entity_id: switch.sonoff_mini_1_relay
+    action: switch.turn_off
+  mode: restart
+- id: '1723045936841'
+  alias: Garage Fan
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - sensor.indoor_outdoor_meter_61b1
+  conditions:
+  - condition: and
+    conditions:
+    - condition: numeric_state
+      entity_id: sensor.indoor_outdoor_meter_61b1
+      above: 28
+    - condition: numeric_state
+      entity_id: sensor.indoor_outdoor_meter_bd1c_humidity
+      below: 65
+    - condition: template
+      value_template: '{{ (states("sensor.indoor_outdoor_meter_61b1") | float - states("sensor.indoor_outdoor_meter_bd1c")
+        | float) > 2 }}'
+  actions:
+  - service_template: '{% if float(states("sensor.indoor_outdoor_meter_61b1")) > 28
+      and float(states("sensor.indoor_outdoor_meter_61b1")) - float(states("sensor.indoor_outdoor_meter_bd1c"))
+      > 2 and float(states("sensor.indoor_outdoor_meter_bd1c_humidity")) < 65 %} switch.turn_on
+      {% else %} switch.turn_off {% endif %}'
+    entity_id: switch.sonoff_s31_1_relay
+    enabled: false
+  - action: switch.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: switch.sonoff_s31_1_relay
+  - repeat:
+      sequence:
+      - delay:
+          hours: 0
+          minutes: 1
+          seconds: 0
+          milliseconds: 0
+      until:
+      - condition: or
+        conditions:
+        - condition: numeric_state
+          entity_id: sensor.indoor_outdoor_meter_61b1
+          below: 27
+        - condition: numeric_state
+          entity_id: sensor.indoor_outdoor_meter_bd1c_humidity
+          above: 65
+        - condition: template
+          value_template: '{{ (states("sensor.indoor_outdoor_meter_61b1") | float
+            - states("sensor.indoor_outdoor_meter_bd1c") | float) < 2 }}'
+  - action: switch.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: switch.sonoff_s31_1_relay
+  mode: single
+  max_exceeded: silent
+- id: '1737059481622'
+  alias: Turn on/off closet light
+  description: Turn on/off closet light
+  triggers:
+  - type: opened
+    device_id: 7a60907bb54bfc475ecd2e972bffc6fa
+    entity_id: 713bc3f382a1e20fb9fc6a7bd8e960f6
+    domain: binary_sensor
+    trigger: device
+    id: opened
+  - type: not_opened
+    device_id: 7a60907bb54bfc475ecd2e972bffc6fa
+    entity_id: 713bc3f382a1e20fb9fc6a7bd8e960f6
+    domain: binary_sensor
+    trigger: device
+    id: closed
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - opened
+      sequence:
+      - type: turn_on
+        device_id: 7067b802788bb945bf1df8400f2a1731
+        entity_id: 54864bc1558488497e1cccb8660d7b3c
+        domain: switch
+      - delay:
+          hours: 0
+          minutes: 1
+          seconds: 0
+          milliseconds: 0
+      - type: turn_off
+        device_id: 7067b802788bb945bf1df8400f2a1731
+        entity_id: 54864bc1558488497e1cccb8660d7b3c
+        domain: switch
+    - conditions:
+      - condition: trigger
+        id:
+        - closed
+      sequence:
+      - type: turn_off
+        device_id: 7067b802788bb945bf1df8400f2a1731
+        entity_id: 54864bc1558488497e1cccb8660d7b3c
+        domain: switch
+  mode: restart
+- id: '1741192961822'
+  alias: String Lights Motion (Sonoff)
+  description: ''
+  triggers:
+  - entity_id:
+    - binary_sensor.ewelink_snzb_03p_occupancy
+    to: 'on'
+    trigger: state
+  conditions:
+  - condition: and
+    conditions:
+    - condition: sun
+      before: sunrise
+      after: sunset
+    - condition: not
+      conditions:
+      - condition: state
+        entity_id: switch.sonoff_mini_1_relay
+        state: 'on'
+  actions:
+  - metadata: {}
+    data: {}
+    target:
+      entity_id: switch.sonoff_mini_1_relay
+    action: switch.turn_on
+  - wait_for_trigger:
+    - entity_id:
+      - binary_sensor.ewelink_snzb_03p_occupancy
+      for:
+        hours: 0
+        minutes: 0
+        seconds: 0
+      to: 'off'
+      trigger: state
+  - metadata: {}
+    data: {}
+    target:
+      entity_id: switch.sonoff_mini_1_relay
+    action: switch.turn_off
+  mode: restart
+- id: '1741382959251'
+  alias: Shabbat Hot Plate (Friday Dinner)
+  description: ''
+  triggers:
+  - trigger: time
+    at: '16:30:00'
+    id: start
+  - trigger: time
+    at: '18:05:00'
+    id: end
+  conditions:
+  - condition: time
+    weekday:
+    - fri
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - start
+      sequence:
+      - action: switch.turn_on
+        metadata: {}
+        data: {}
+        target:
+          entity_id: switch.sonoff_s31_5_relay
+    - conditions:
+      - condition: trigger
+        id:
+        - end
+      sequence:
+      - action: switch.turn_off
+        metadata: {}
+        data: {}
+        target:
+          entity_id: switch.sonoff_s31_5_relay
+  mode: single
+- id: '1741983626893'
+  alias: Shabbat Hot Plate (Saturday Lunch)
+  description: ''
+  triggers:
+  - trigger: time
+    at: '11:15:00'
+    id: start
+  - trigger: time
+    at: '12:15:00'
+    id: end
+  conditions:
+  - condition: time
+    weekday:
+    - sat
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - start
+      sequence:
+      - action: switch.turn_on
+        metadata: {}
+        data: {}
+        target:
+          entity_id: switch.sonoff_s31_5_relay
+    - conditions:
+      - condition: trigger
+        id:
+        - end
+      sequence:
+      - action: switch.turn_off
+        metadata: {}
+        data: {}
+        target:
+          entity_id: switch.sonoff_s31_5_relay
+  mode: single
+- id: '1742604167071'
+  alias: Main Bedroom Light Switch
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.sonoff_mini_r4_2_switch
+    from: 'off'
+    to: 'on'
+  conditions: []
+  actions:
+  - action: light.toggle
+    metadata: {}
+    data:
+      brightness_pct: 100
+    target:
+      entity_id: light.bedroom_lights
+  mode: single
+- id: '1754572992792'
+  alias: Front Porch Lights
+  description: ''
+  triggers:
+  - trigger: sun
+    event: sunset
+    offset: 00:30:00
+    id: sunset
+  - trigger: sun
+    event: sunrise
+    offset: -00:30:00
+    id: sunrise
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - sunset
+      sequence:
+      - action: switch.turn_on
+        metadata: {}
+        data: {}
+        target:
+          entity_id: switch.sonoff_s31_2_relay
+    - conditions:
+      - condition: trigger
+        id:
+        - sunrise
+      sequence:
+      - action: switch.turn_off
+        metadata: {}
+        data: {}
+        target:
+          entity_id: switch.sonoff_s31_2_relay
+  mode: single
+- id: '1757363504680'
+  alias: Front Yard Hose
+  description: ''
+  triggers:
+  - trigger: time
+    at: 07:00:00
+  - trigger: time
+    at: '12:00:00'
+  - trigger: time
+    at: '17:00:00'
+  conditions:
+  - condition: numeric_state
+    entity_id: sensor.indoor_outdoor_meter_bd1c_humidity
+    below: 95
+  actions:
+  - action: switch.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: switch.sonoff_swv
+  - action: notify.mobile_app_pixel_8_pro
+    metadata: {}
+    data:
+      message: Hose turned on for 8 minutes
+  - delay:
+      hours: 0
+      minutes: 8
+      seconds: 0
+      milliseconds: 0
+  - action: switch.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: switch.sonoff_swv
+  mode: single
+- id: '1764364957842'
+  alias: Hanukkah Dinosaur
+  description: ''
+  triggers:
+  - trigger: time
+    at: '14:00:00'
+    id: 'on'
+  - trigger: time
+    at: '20:00:00'
+    id: 'off'
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - 'on'
+      sequence:
+      - action: switch.turn_on
+        metadata: {}
+        data: {}
+        target:
+          entity_id: switch.sonoff_s31_1_relay
+    - conditions:
+      - condition: trigger
+        id:
+        - 'off'
+      sequence:
+      - action: switch.turn_off
+        metadata: {}
+        data: {}
+        target:
+          entity_id: switch.sonoff_s31_1_relay
+  mode: single

@@ -1,0 +1,12 @@
+{
+    "files.exclude": {
+        ".Trash-0/**": true,
+        "**/__pycache__": true,
+        "**/.cloud": true,
+        "**/.DS_Store": true,
+        "**/.HA_VERSION": true,
+        "**/.storage": true,
+        "**/deps/**": true,
+        "**/node_modules": true
+    }
+}
